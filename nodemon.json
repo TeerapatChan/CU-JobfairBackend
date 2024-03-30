@@ -1,0 +1,5 @@
+{
+  "watch": ["*.ts"],
+  "ignore": ["src/**/*.spec.ts"],
+  "exec": "pnpx ts-node"
+}
