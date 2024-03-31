@@ -4,10 +4,7 @@ import { protect } from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router
-  .post("/register", register)
-  .post("/login", login)
-  .post("/logout", logout);
+router.post("/register", register).post("/login", login).get("/logout", logout);
 
 router.get("/me", protect, getMe);
 
