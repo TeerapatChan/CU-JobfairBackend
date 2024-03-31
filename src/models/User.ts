@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { Document, Schema, model } from "mongoose";
-import crypto from "crypto";
 
 export interface IUser extends Document {
   name: string;
@@ -12,6 +12,7 @@ export interface IUser extends Document {
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
   resetPasswordDate?: Date;
+  profileImageUrl?: string;
   createdAt: Date;
   getSignedJwtToken: () => string;
   comparePassword: (enteredPassword: string) => Promise<boolean>;
@@ -58,6 +59,7 @@ const UserSchema: Schema<IUser> = new Schema<IUser>({
     type: Date,
     default: Date.now,
   },
+  profileImageUrl: String,
 });
 
 UserSchema.pre<IUser>("save", async function (next) {
