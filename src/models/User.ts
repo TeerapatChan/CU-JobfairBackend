@@ -12,7 +12,7 @@ export interface IUser extends Document {
   resetPasswordExpire?: Date;
   createdAt: Date;
   getSignedJwtToken: () => string;
-  matchPassword: (enteredPassword: string) => Promise<boolean>;
+  comparePassword: (enteredPassword: string) => Promise<boolean>;
 }
 
 const UserSchema: Schema<IUser> = new Schema<IUser>({
@@ -71,10 +71,7 @@ UserSchema.methods.getSignedJwtToken = function (this: IUser) {
   });
 };
 
-UserSchema.methods.matchPassword = async function (
-  this: IUser,
-  enteredPassword: string
-) {
+UserSchema.methods.comparePassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

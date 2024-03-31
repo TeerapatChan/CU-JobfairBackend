@@ -2,12 +2,15 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import { connectToDatabase } from "./config/database";
+import authRoute from "./routes/auth.router";
 
 dotenv.config();
 
 const app = express();
 
 app.use(cors());
+app.use(express.json());
+app.use("/api/auth", authRoute);
 
 const PORT = process.env.PORT;
 
