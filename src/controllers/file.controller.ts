@@ -18,6 +18,8 @@ export const uploadFile = (req: Request, res: Response) => {
     Bucket: bucketName,
     Key: file.originalname,
     Body: file.buffer,
+    ContentType: file.mimetype,
+    ContentDisposition: "inline",
   };
 
   s3.upload(params, async (err: Error, data: S3.ManagedUpload.SendData) => {
