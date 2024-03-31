@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Document, Schema, model } from "mongoose";
+import crypto from "crypto";
 
 export interface IUser extends Document {
   name: string;
@@ -10,9 +11,11 @@ export interface IUser extends Document {
   password: string;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
+  resetPasswordDate?: Date;
   createdAt: Date;
   getSignedJwtToken: () => string;
   comparePassword: (enteredPassword: string) => Promise<boolean>;
+  createPasswordResetToken: () => string;
 }
 
 const UserSchema: Schema<IUser> = new Schema<IUser>({
@@ -50,6 +53,7 @@ const UserSchema: Schema<IUser> = new Schema<IUser>({
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  resetPasswordDate: Date,
   createdAt: {
     type: Date,
     default: Date.now,
@@ -73,6 +77,16 @@ UserSchema.methods.getSignedJwtToken = function (this: IUser) {
 
 UserSchema.methods.comparePassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+UserSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
+  return resetToken;
 };
 
 export default model<IUser>("User", UserSchema);

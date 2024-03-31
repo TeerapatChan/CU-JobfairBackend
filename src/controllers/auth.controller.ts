@@ -1,5 +1,15 @@
 import User, { IUser } from "../models/User";
 import { CookieOptions, Request, Response } from "express";
+import { sendEmail } from "../services/mail";
+import crypto from "crypto";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUser | null;
+    }
+  }
+}
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -10,7 +20,10 @@ export const register = async (req: Request, res: Response) => {
       email: email,
     });
     if (existing) {
-      return res.status(400).json({ message: "Email already exists" });
+      return res.status(400).json({
+        success: false,
+        message: "Email already exists",
+      });
     }
 
     await user.save();
@@ -28,9 +41,10 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Please provide email and password" });
+      return res.status(400).json({
+        success: false,
+        message: "Please provide email and password",
+      });
     }
 
     const user = await User.findOne({
@@ -38,12 +52,18 @@ export const login = async (req: Request, res: Response) => {
     }).select("+password");
 
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Wrong password" });
+      return res.status(400).json({
+        success: false,
+        message: "Wrong password",
+      });
     }
 
     sendTokenResponse(user, 200, res);
@@ -92,4 +112,74 @@ const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
     email: user.email,
     token,
   });
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+
+  const resetUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/api/auth/reset-password/${resetToken}`;
+
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: "Password reset",
+      text: `You are receiving this email because you (or someone else) has requested the reset of a password. You have 10 minutes to reset your password by clicking the link below. ${resetUrl}`,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: resetToken,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+    return res.status(500).json({
+      success: false,
+      message: "Email could not be sent",
+    });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.resetToken)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid token",
+    });
+  }
+  if (req.body.password !== req.body.confirmPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Passwords do not match",
+    });
+  }
+  user.password = req.body.password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  sendTokenResponse(user, 200, res);
 };
