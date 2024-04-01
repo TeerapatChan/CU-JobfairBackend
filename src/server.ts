@@ -10,6 +10,7 @@ import multer from "multer";
 import authRouter from "./routes/auth.router";
 import uploadRouter from "./routes/file.route";
 import { connectToDatabase } from "./services/database";
+import bookingRouter from "./routes/booking.router";
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ const upload = multer({
 app.use("/api/file", upload.single("file"), uploadRouter);
 
 app.use("/api/auth", authRouter);
+app.use("/api/bookings", bookingRouter);
 
 const PORT = process.env.PORT || 3000;
 
