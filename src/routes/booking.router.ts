@@ -2,15 +2,15 @@ import express from "express";
 import {
   getBookings,
   getBooking,
-  addBooking,
   updateBooking,
   deleteBooking,
+  addBooking,
 } from "../controllers/booking.controller";
-import { protect, authorize } from "../middlewares/auth.middleware";
+import { protect } from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.route("/").get(protect, getBookings);
+router.route("/").get(protect, getBookings).post(protect, addBooking);
 
 router
   .route("/:id")

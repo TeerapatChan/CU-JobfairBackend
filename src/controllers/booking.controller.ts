@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import Booking from "../models/Booking";
 import Company from "../models/Company";
 
@@ -60,12 +60,12 @@ export const getBooking = async (req: Request, res: Response) => {
 export const addBooking = async (req: Request, res: Response) => {
   console.log(req.body);
   try {
-    req.body.company = req.params.companyId;
-    const company = await Company.findById(req.params.companyId);
+    const companyId = req.body.company;
+    const company = await Company.findById(companyId);
     if (!company) {
       return res.status(404).json({
         success: false,
-        message: `No company with the id of ${req.params.companyId}`,
+        message: `No company with the id of ${companyId}`,
       });
     }
     req.body.user = req.user?.id;
@@ -82,7 +82,7 @@ export const addBooking = async (req: Request, res: Response) => {
     const last = new Date("2022-05-13");
 
     if (bookingDate < first || bookingDate > last) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "Invalid booking date",
       });
@@ -121,6 +121,17 @@ export const updateBooking = async (req: Request, res: Response) => {
       return res.status(401).json({
         success: false,
         message: `User ${req.user?.id} is not authorized to update this booking`,
+      });
+    }
+
+    const bookingDate = new Date(req.body.bookingDate);
+    const first = new Date("2022-05-10");
+    const last = new Date("2022-05-13");
+
+    if (bookingDate < first || bookingDate > last) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid booking date",
       });
     }
 
