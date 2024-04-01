@@ -8,11 +8,14 @@ import helmet, { xssFilter } from "helmet";
 import hpp from "hpp";
 import multer from "multer";
 import authRouter from "./routes/auth.router";
+import companyRouter from "./routes/company.route";
 import uploadRouter from "./routes/file.route";
+import { checkBucket } from "./services/bucket";
 import { connectToDatabase } from "./services/database";
 import bookingRouter from "./routes/booking.router";
 
 dotenv.config();
+checkBucket();
 
 const app = express();
 
@@ -36,6 +39,8 @@ const upload = multer({
     fileSize: 20 * 1024 * 1024,
   },
 });
+
+app.use("/api/company", companyRouter);
 
 app.use("/api/file", upload.single("file"), uploadRouter);
 
