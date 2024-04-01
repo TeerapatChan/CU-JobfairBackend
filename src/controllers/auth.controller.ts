@@ -24,7 +24,7 @@ export const register = async (req: Request, res: Response) => {
       data: user,
     });
   } catch (error) {
-    res.status(400).json({ success: false });
+    res.status(500).json({ success: false });
   }
 };
 
@@ -61,7 +61,7 @@ export const login = async (req: Request, res: Response) => {
     sendTokenResponse(user, 200, res);
   } catch (error) {
     console.log(error);
-    res.status(400).json({ success: false });
+    res.status(500).json({ success: false });
   }
 };
 
