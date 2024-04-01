@@ -3,14 +3,6 @@ import { CookieOptions, Request, Response } from "express";
 import { sendEmail } from "../services/mail";
 import crypto from "crypto";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: IUser | null;
-    }
-  }
-}
-
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, tel, email, password } = req.body;

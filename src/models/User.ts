@@ -71,7 +71,7 @@ UserSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
-UserSchema.methods.getSignedJwtToken = function (this: IUser) {
+UserSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET!, {
     expiresIn: process.env.JWT_EXPIRE!,
   });
