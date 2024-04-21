@@ -11,6 +11,9 @@ rectangle "Online Job Fair Registration" as ojf {
     (Delete his booking)
     (Forget password)
     (Log out)
+    (Manage Company information)
+
+    (See company list) --> (Manage Company information)
 
     (Login) .> (Register) : <<include>>
 
@@ -35,7 +38,7 @@ RegisteredUser -- (Edit his booking)
 RegisteredUser -- (Delete his booking)
 RegisteredUser -- (Log out)
 
-
+(Manage Company information) -- Admin
 (Log out) -- Admin
 (View any bookings) -- Admin
 (Edit any bookings) -- Admin

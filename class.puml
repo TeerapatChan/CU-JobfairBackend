@@ -1,0 +1,89 @@
+@startuml ClassDiagram
+left to right direction
+package "Job fair"{
+    class "<<Application>>\nBuddyCompanyService" as BuddyCompanyService{}
+
+    class "<<Resource>>\nBookings" as ResourceBookings{
+        <<GET>> +getBookings():Booking
+        <<POST>> +createBooking():Booking
+    }
+
+    class "<<Resource>>\nCompanies" as ResourceCompanies{
+        <<GET>> +getCompanies():Company
+        <<POST>> +createCompany():Company
+    }
+
+    class "<<Resource>>\nAuth" as ResourceAuth{
+    }
+
+    class "<<Resource>>\nBooking" as ResourceBooking {
+        <<GET>> +getBooking(): Booking
+        <<PUT>> +updateBooking(): Booking
+        <<DELETE>> +deleteBooking(): void
+    }
+
+    class "<<Resource>>\nCompany" as ResourceCompany {
+        <<GET>> +getCompany(): Company
+        <<PUT>> +updateCompany(): Company
+        <<DELETE>> +deleteCompany(): void
+    }
+
+    class "<<Resource>>\nLogout" as ResourceLogout {
+        <<GET>> +logout(): void
+    }
+
+    class "<<Resource>>\nLogin" as ResourceLogin {
+        <<POST>> +login(): User
+    }
+    class "<<Resource>>\nRegister" as ResourceRegister {
+        <<POST>> +register(): User
+    }
+    class "<<Resource>>\nMe" as ResourceMe {
+        <<GET>> +getMe(): User
+    }
+    class "<<Resource>>\nImage" as ResourceImage {
+        <<POST>> +uploadFile(): void
+    }
+
+    class "<<Representation>>\nBooking" as RepresentationBooking {
+        -bookingDate: Date
+        -user: ObjectId
+        -company: ObjectId
+        -createdAt: Date
+    }
+    class "<<Representation>>\nCompany" as RepresentationCompany {
+        -name: String
+        -address: String
+        -website: String
+        -description: String
+        -tel: String
+    }
+    class "<<Representation>>\nUser" as RepresentationUser {
+        -name: String
+        -email: String
+        -tel: String
+        -password: String
+        -profileImageUrl: String
+        -createdAt: Date
+        -role: String
+    }
+}
+BuddyCompanyService ..> ResourceCompanies:"/companies\n<<Path>>"
+BuddyCompanyService ..> ResourceBookings:"/bookings\n<<Path>>"
+BuddyCompanyService ..> ResourceAuth:"/auth\n<<Path>>"
+ResourceBookings ..> ResourceBooking:"/{bookingId}\n<<Path>>"
+ResourceCompanies ..> ResourceCompany:"/{companyId}\n<<Path>>"
+ResourceAuth ..> ResourceLogin:"/login\n<<Path>>"
+ResourceAuth ..> ResourceLogout:"/logout\n<<Path>>"
+ResourceAuth ..> ResourceRegister:"/register\n<<Path>>"
+ResourceAuth ..> ResourceMe:"/me\n<<Path>>"
+ResourceAuth ..> ResourceImage:"/file/upload"
+ResourceBooking ..> RepresentationBooking:"<<use>>"
+ResourceCompany ..> RepresentationCompany:"<<use>>"
+ResourceImage ..> RepresentationUser:"<<use>>"
+ResourceLogin ..> RepresentationUser:"<<use>>"
+ResourceLogout ..> RepresentationUser:"<<use>>"
+ResourceRegister ..> RepresentationUser:"<<use>>"
+ResourceMe ..> RepresentationUser:"<<use>>"
+
+@enduml
