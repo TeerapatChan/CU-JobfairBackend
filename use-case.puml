@@ -9,6 +9,7 @@ rectangle "Online Job Fair Registration" as ojf {
     (View his booking)
     (Edit his booking)
     (Delete his booking)
+    (Forget password)
     (Log out)
 
     (Login) .> (Register) : <<include>>
@@ -23,9 +24,10 @@ rectangle "Online Job Fair Registration" as ojf {
 
 RegisteredUser --> User
 
-
+User --(Forget password)
 User -- (See company list)
 User -- (Register)
+RegisteredUser -- (Forget password)
 RegisteredUser -- (Login)
 RegisteredUser -- (Book up to 3 interview sessions)
 RegisteredUser -- (View his booking)
