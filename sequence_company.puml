@@ -1,0 +1,69 @@
+@startuml POST Company
+
+header Job fair sequence diagram
+footer Page %page% of %lastpage%
+' title "Company"
+title POST Company
+
+participant "Client" as client
+participant "<<TypeScript>>\n:server" as server
+participant "<<router>>\n:companies" as routerCompanies
+participant "<<middleware>>\n:auth" as middleware
+participant "<<controllers>>\n:companies" as controllerCompanies
+participant "<<model>>\n:Company" as modelCompany
+database "<<MongoDB>>\n:companies" as CompaniesDatabase
+
+' alt POST Company
+    client->server ++:req.post('/companies')
+    server->routerCompanies ++:app.use('/companies',companies)
+    routerCompanies -> middleware ++:protect,authorize("admin")
+    middleware -> controllerCompanies ++:createCompany()
+    controllerCompanies->modelCompany ++:create(req.body)
+    modelCompany ->CompaniesDatabase ++: CompanySchema
+    CompaniesDatabase --> modelCompany --: company
+    controllerCompanies <-- modelCompany --:company
+    controllerCompanies->client --:response
+' end
+' alt PUT Company
+    ' client->server ++:req.put('/companies/:id')
+    ' server->routerCompanies ++:app.use('/companies',companies)
+    ' routerCompanies -> middleware ++:protect,authorize("admin")
+    ' middleware -> controllerCompanies ++:updateCompany()
+    ' controllerCompanies->modelCompany ++:findByIdAndUpdate(req.params.id,req.body)
+    ' modelCompany ->CompaniesDatabase ++: Companieschema
+    ' CompaniesDatabase --> modelCompany --: company
+    ' controllerCompanies <-- modelCompany --:company
+    ' controllerCompanies->client --:response
+' end
+' alt GET SINGLE Company
+    ' client->server ++:req.get('/companies/:id')
+    ' server->routerCompanies ++:app.use('/companies',companies)
+    ' routerCompanies -> controllerCompanies ++:getCompany()
+    ' controllerCompanies->modelCompany ++:findById(req.params.id)
+    ' modelCompany ->CompaniesDatabase ++: CompanySchema
+    ' CompaniesDatabase --> modelCompany --: company
+    ' controllerCompanies <-- modelCompany --:company
+    ' controllerCompanies->client --:response
+' end
+' alt GET ALL Companies
+    ' client->server ++:req.get('/companies')
+    ' server->routerCompanies ++:app.use('/companies',companies)
+    ' routerCompanies -> controllerCompanies ++:getCompanies()
+    ' controllerCompanies->modelCompany ++:findAll()
+    ' modelCompany ->CompaniesDatabase ++: CompanySchema
+    ' CompaniesDatabase --> modelCompany --: company
+    ' controllerCompanies <-- modelCompany --:company
+    ' controllerCompanies->client --:response
+' end
+' alt DELETE SINGLE Company
+    ' client->server ++:req.delete('/companies/:id')
+    ' server->routerCompanies ++:app.use('/companies',companies)
+    ' routerCompanies -> middleware ++:protect,authorize("admin")
+    ' middleware -> controllerCompanies ++:deleteCompany()
+    ' controllerCompanies->modelCompany ++:delete(req.params.id)
+    ' modelCompany ->CompaniesDatabase ++: CompanySchema
+    ' CompaniesDatabase --> modelCompany --: company
+    ' controllerCompanies <-- modelCompany --:company
+    ' controllerCompanies->client --:response
+' end
+@enduml
