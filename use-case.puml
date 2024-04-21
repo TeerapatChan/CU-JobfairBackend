@@ -1,0 +1,42 @@
+@startuml
+left to right direction
+
+rectangle "Online Job Fair Registration" as ojf {
+    (See company list)
+    (Register)
+    (Login)
+    (Book up to 3 interview sessions)
+    (View his booking)
+    (Edit his booking)
+    (Delete his booking)
+    (Log out)
+
+    (Login) .> (Register) : <<include>>
+
+    (View his booking) --> (View any bookings)
+    (Edit his booking) --> (Edit any bookings)
+    (Delete his booking) --> (Delete any bookings)
+
+    (Book up to 3 interview sessions) .> (Login) : <<include>>
+    (Log out) .> (Login) : <<include>>
+}
+
+RegisteredUser --> User
+
+
+User -- (See company list)
+User -- (Register)
+RegisteredUser -- (Login)
+RegisteredUser -- (Book up to 3 interview sessions)
+RegisteredUser -- (View his booking)
+RegisteredUser -- (Edit his booking)
+RegisteredUser -- (Delete his booking)
+RegisteredUser -- (Log out)
+
+
+(Log out) -- Admin
+(View any bookings) -- Admin
+(Edit any bookings) -- Admin
+(Delete any bookings) -- Admin
+
+@enduml
