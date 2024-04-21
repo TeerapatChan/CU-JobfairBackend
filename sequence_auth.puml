@@ -1,0 +1,53 @@
+@startuml Get me
+
+header Job fair Sequence Diagram
+footer Page %page% of %lastpage%
+' title "Authentication"
+title Get me
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:auth" as routerUsers
+participant "<<middleware>>\n:auth" as middlewareUsers
+participant "<<controllers>>\n:auth" as controllersUsers
+participant "<<model>>\n:User" as modelUser
+database "<<MongoDB>>\n:User" as UserDatabase
+
+' alt Register
+    ' client->server ++:req.put('/auth/register')
+    ' server->routerUsers ++:app.use('/auth',auth)
+    ' routerUsers->middlewareUsers ++:auth()
+    ' middlewareUsers->controllersUsers ++:register()
+    ' controllersUsers->modelUser ++:create(req.body)
+    ' modelUser->UserDatabase ++:UserSchema
+    ' UserDatabase-->modelUser --:user
+    ' controllersUsers <-- modelUser --:user
+    ' controllersUsers-> client --:response
+' end
+' alt Login
+    ' client->server ++:req.put('/auth/login')
+    ' server->routerUsers ++:app.use('/auth',auth)
+    ' routerUsers->controllersUsers ++:login()
+    ' controllersUsers->modelUser ++:findOne(req.body())
+    ' modelUser->UserDatabase ++:UserSchema
+    ' UserDatabase-->modelUser --:user
+    ' controllersUsers <-- modelUser --:user
+' end
+' alt Logout
+    ' client->server ++:req.put('/auth/logout')
+    ' server->routerUsers ++:app.use('/auth',auth)
+    ' routerUsers->middlewareUsers ++:protect()
+    ' middlewareUsers->controllersUsers ++:logout()
+    ' controllersUsers-> client ++:response
+' end
+' alt Get Me
+    client->server ++:req.put('/auth/me')
+    server->routerUsers ++:app.use('/auth',auth)
+    routerUsers->middlewareUsers ++:protect()
+    middlewareUsers->controllersUsers ++:getMe()
+    controllersUsers->modelUser ++:findById(req.user.id)
+    modelUser->UserDatabase ++:findById(req.user.id)
+    UserDatabase-->modelUser ++:user
+    modelUser-->controllersUsers ++:user
+    controllersUsers-->client ++:response
+' end
+@enduml
