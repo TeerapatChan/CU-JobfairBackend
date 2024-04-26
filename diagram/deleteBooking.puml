@@ -1,0 +1,24 @@
+@startuml
+
+title Delete Booking
+
+participant "Client:C" as C
+participant "<<Typescript>>:Server" as S
+participant "<<router>>:Booking" as R
+participant "<<middleware>>:Auth" as A
+participant "<<controller>>:Booking" as B
+participant "<<model>>:Booking" as M
+database "<<MongoDB>>:bookings" as DB
+
+C -> S++: req.delete('/bookings')
+S -> R++: app.use('/bookings', bookingRouter)
+R -> A++: protect()
+A -> B++: deleteBooking()
+
+B -> M++: delete(req.params.id)
+M -> DB++: BookingSchema
+DB --> M--: booking
+M --> B--: booking
+B --> C--: response
+
+@enduml
