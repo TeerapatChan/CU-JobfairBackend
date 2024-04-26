@@ -11,7 +11,6 @@ export interface IUser extends Document {
   password: string;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
-  resetPasswordDate?: Date;
   profileImageUrl?: string;
   createdAt: Date;
   getSignedJwtToken: () => string;
@@ -54,7 +53,6 @@ const UserSchema: Schema<IUser> = new Schema<IUser>({
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
-  resetPasswordDate: Date,
   createdAt: {
     type: Date,
     default: Date.now,

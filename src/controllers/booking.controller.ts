@@ -61,7 +61,9 @@ export const addBooking = async (req: Request, res: Response) => {
   console.log(req.body);
   try {
     const companyId = req.body.company;
+    console.log(req.body);
     const company = await Company.findById(companyId);
+
     if (!company) {
       return res.status(404).json({
         success: false,
@@ -71,6 +73,7 @@ export const addBooking = async (req: Request, res: Response) => {
     req.body.user = req.user?.id;
 
     const existedBookings = await Booking.find({ user: req.user?.id });
+    console.log(existedBookings.length);
     if (existedBookings.length >= 3) {
       return res.status(400).json({
         success: false,
@@ -90,7 +93,7 @@ export const addBooking = async (req: Request, res: Response) => {
 
     const booking = await Booking.create(req.body);
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: booking,
     });
