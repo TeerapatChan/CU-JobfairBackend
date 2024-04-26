@@ -73,7 +73,6 @@ export const addBooking = async (req: Request, res: Response) => {
     req.body.user = req.user?.id;
 
     const existedBookings = await Booking.find({ user: req.user?.id });
-    console.log(existedBookings.length);
     if (existedBookings.length >= 3) {
       return res.status(400).json({
         success: false,

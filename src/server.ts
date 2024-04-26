@@ -7,12 +7,12 @@ import rateLimit from "express-rate-limit";
 import helmet, { xssFilter } from "helmet";
 import hpp from "hpp";
 import multer from "multer";
-import authRouter from "./routes/auth.router";
+import authRouter from "./routes/auth.route";
 import companyRouter from "./routes/company.route";
 import uploadRouter from "./routes/file.route";
 import { checkBucket } from "./services/bucket";
 import { connectToDatabase } from "./services/database";
-import bookingRouter from "./routes/booking.router";
+import bookingRouter from "./routes/booking.route";
 
 dotenv.config();
 checkBucket();
