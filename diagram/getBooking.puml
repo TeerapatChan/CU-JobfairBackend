@@ -12,7 +12,7 @@ database "<<MongoDB>>:bookings" as DB
 
 C -> S++: req.get('/bookings')
 S -> R++: app.use('/bookings', bookingRouter)
-R -> A++: protect()
+R -> A++: protect() , authorize('admin')
 A -> B++: getBooking()
 
 B -> M++: findById(req.params.id)

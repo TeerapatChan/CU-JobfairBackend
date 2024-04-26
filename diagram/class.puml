@@ -43,10 +43,10 @@ package "Job fair"{
     class "<<Resource>>\nMe" as ResourceMe {
         <<GET>> +getMe(): User
     }
-    class "<<Resource>>\nRegister" as ResourceForgotPassword {
+    class "<<Resource>>\nForgotPassword" as ResourceForgotPassword {
         <<POST>> +forgotPassword(): void
     }
-    class "<<Resource>>\nRegister" as ResourceResetPassword {
+    class "<<Resource>>\nResetPassword" as ResourceResetPassword {
         <<POST>> +resetPassword(): void
     }
 
@@ -93,6 +93,8 @@ ResourceAuth ..> ResourceMe:"/me\n<<Path>>"
 ResourceAuth ..> ResourceForgotPassword:"/forgot-password\n<<Path>>"
 ResourceAuth ..> ResourceResetPassword:"/reset-password\n<<Path>>"
 
+ResourceForgotPassword ..> RepresentationUser:"<<use>>"
+ResourceResetPassword ..> RepresentationUser:"<<use>>"
 ResourceBooking ..> RepresentationBooking:"<<use>>"
 ResourceCompany ..> RepresentationCompany:"<<use>>"
 ResourceImage ..> RepresentationUser:"<<use>>"
@@ -100,7 +102,5 @@ ResourceLogin ..> RepresentationUser:"<<use>>"
 ResourceLogout ..> RepresentationUser:"<<use>>"
 ResourceRegister ..> RepresentationUser:"<<use>>"
 ResourceMe ..> RepresentationUser:"<<use>>"
-ResourceForgotPassword ..> Representation:"<<use>>"
-ResourceResetPassword ..> Representation:"<<use>>"
 
 @enduml
