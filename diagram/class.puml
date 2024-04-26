@@ -1,11 +1,11 @@
 @startuml ClassDiagram
 left to right direction
 package "Job fair"{
-    class "<<Application>>\nBuddyCompanyService" as BuddyCompanyService{}
+    class "<<Application>>\nCompanyService" as CompanyService{}
 
     class "<<Resource>>\nBookings" as ResourceBookings{
         <<GET>> +getBookings():Booking
-        <<POST>> +createBooking():Booking
+        <<POST>> +addBooking():Booking
     }
 
     class "<<Resource>>\nCompanies" as ResourceCompanies{
@@ -18,12 +18,14 @@ package "Job fair"{
 
     class "<<Resource>>\nBooking" as ResourceBooking {
         <<GET>> +getBooking(): Booking
+        <<GET>> +getBookings(): Booking
         <<PUT>> +updateBooking(): Booking
         <<DELETE>> +deleteBooking(): void
     }
 
     class "<<Resource>>\nCompany" as ResourceCompany {
         <<GET>> +getCompany(): Company
+        <<GET>> +getCompanies(): Company
         <<PUT>> +updateCompany(): Company
         <<DELETE>> +deleteCompany(): void
     }
@@ -41,6 +43,13 @@ package "Job fair"{
     class "<<Resource>>\nMe" as ResourceMe {
         <<GET>> +getMe(): User
     }
+    class "<<Resource>>\nRegister" as ResourceForgotPassword {
+        <<POST>> +forgotPassword(): void
+    }
+    class "<<Resource>>\nRegister" as ResourceResetPassword {
+        <<POST>> +resetPassword(): void
+    }
+
     class "<<Resource>>\nImage" as ResourceImage {
         <<POST>> +uploadFile(): void
     }
@@ -66,18 +75,24 @@ package "Job fair"{
         -profileImageUrl: String
         -createdAt: Date
         -role: String
+        -resetPasswordToken: String
+        -resetPasswordExpire: Date
     }
 }
-BuddyCompanyService ..> ResourceCompanies:"/companies\n<<Path>>"
-BuddyCompanyService ..> ResourceBookings:"/bookings\n<<Path>>"
-BuddyCompanyService ..> ResourceAuth:"/auth\n<<Path>>"
+CompanyService ..> ResourceCompanies:"/companies\n<<Path>>"
+CompanyService ..> ResourceBookings:"/bookings\n<<Path>>"
+CompanyService ..> ResourceAuth:"/auth\n<<Path>>"
+CompanyService ..> ResourceImage:"/file/upload"
+
 ResourceBookings ..> ResourceBooking:"/{bookingId}\n<<Path>>"
 ResourceCompanies ..> ResourceCompany:"/{companyId}\n<<Path>>"
 ResourceAuth ..> ResourceLogin:"/login\n<<Path>>"
 ResourceAuth ..> ResourceLogout:"/logout\n<<Path>>"
 ResourceAuth ..> ResourceRegister:"/register\n<<Path>>"
 ResourceAuth ..> ResourceMe:"/me\n<<Path>>"
-ResourceAuth ..> ResourceImage:"/file/upload"
+ResourceAuth ..> ResourceForgotPassword:"/forgot-password\n<<Path>>"
+ResourceAuth ..> ResourceResetPassword:"/reset-password\n<<Path>>"
+
 ResourceBooking ..> RepresentationBooking:"<<use>>"
 ResourceCompany ..> RepresentationCompany:"<<use>>"
 ResourceImage ..> RepresentationUser:"<<use>>"
@@ -85,5 +100,7 @@ ResourceLogin ..> RepresentationUser:"<<use>>"
 ResourceLogout ..> RepresentationUser:"<<use>>"
 ResourceRegister ..> RepresentationUser:"<<use>>"
 ResourceMe ..> RepresentationUser:"<<use>>"
+ResourceForgotPassword ..> Representation:"<<use>>"
+ResourceResetPassword ..> Representation:"<<use>>"
 
 @enduml
