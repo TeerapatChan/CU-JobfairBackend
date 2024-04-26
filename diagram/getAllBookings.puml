@@ -19,7 +19,7 @@ alt role == 'admin'
     M -> DB++: BookingSchema
     DB --> M--: bookings
     M --> B--: bookings
-    B --> C--: response 
+    B --> C: response 
    
 else role == 'user'
     B -> M++: find({user: req.user.id})
