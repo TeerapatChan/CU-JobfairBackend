@@ -18,14 +18,12 @@ package "Job fair"{
 
     class "<<Resource>>\nBooking" as ResourceBooking {
         <<GET>> +getBooking(): Booking
-        <<GET>> +getBookings(): Booking
         <<PUT>> +updateBooking(): Booking
         <<DELETE>> +deleteBooking(): void
     }
 
     class "<<Resource>>\nCompany" as ResourceCompany {
         <<GET>> +getCompany(): Company
-        <<GET>> +getCompanies(): Company
         <<PUT>> +updateCompany(): Company
         <<DELETE>> +deleteCompany(): void
     }
